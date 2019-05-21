@@ -9,7 +9,7 @@ and finally, make use of 0x20 bit encoding in query names.
 
 Responses are identical if the question, answer and authority section including any DNSSEC resource records such as RRSIG or NSEC(3) are identical. Authority and additional section can vary among implementations (e.g. minimal response). For this reason, additional section is ignored and one should choose test query domain names which are either delegations or NXDOMAIN responses so that authority section is consistent.
 
-The check assumes that zone synchronization working. At least most of the time, the SOA serial number should be consistent among all authoritative name servers. To avoid occasional false positive alerts one can delay alert notifications by a few minutes (e.g. SOA refresh interval). If the zone is DNSSEC signed using Online Signing and makes use of elliptic curve DNSSEC algorithms, then RRSIGs will differ on each server and the check cannot be used.
+The check assumes that zone synchronization working. The SOA serial number should be consistent among all authoritative name servers. To avoid occasional false positives one can delay alert notifications by the monitoring system by a few minutes. If the zone is DNSSEC signed using Online Signing and makes use of elliptic curve DNSSEC algorithms, then RRSIGs will differ on each server and the check cannot be used.
 
 The script has been tested with Nagios/Check-MK. It uses the exit code to signal the test result:
  * sys.exit(0) -> OK
