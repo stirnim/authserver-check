@@ -29,7 +29,7 @@ pip3 install dnspython
 
 ```
 ./check-authserver.py -h
-usage: check-authserver.py [-h] -z zone -d domain [domain ...] [-i] [-v]
+usage: check-authserver.py [-h] -z zone -d domain [domain ...] [-t] [-i] [-v]
 
 Nameserver response checker
 
@@ -41,6 +41,7 @@ optional arguments:
                         dnssec signed (e.g. Switch.ch), non-dnssec signed
                         (e.g. noDnsSec.ch) and nxdomain response (e.g.
                         YOURrandomSTRING.ch.)
+  -t                    ignore no reponse (timeout)
   -i                    perform case sensitive matching (useful for testing
                         only)
   -v                    verbose output
