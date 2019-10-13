@@ -78,8 +78,10 @@ def make_auth_query(address, request, isudp=True):
     while (retry < max_retry):
         try:
             if isudp:
+                proto = "udp"
                 response = dns.query.udp(request, address, timeout=timeout)
             else:
+                proto = "tcp"
                 response = dns.query.tcp(request, address, timeout=timeout)
             rrsetlist = []
             # RRsets within answer, authority section are sorted as not all server
@@ -126,10 +128,14 @@ def make_auth_query(address, request, isudp=True):
         except dns.exception.Timeout as e:
             retry += 1
             result = err_timeout
-            logging.debug("error for dns query to " + address + ": " + str(e))
+            logging.debug("error for dns query to " + address + " (" + proto + "): " + str(e))
+        except BrokenPipeError as e:
+            retry += 1
+            result = err_timeout
+            logging.debug("error for dns query to " + address + " (" + proto + "): " + str(e))
         except Exception as e:
             retry += 1
-            logging.debug("error for dns query to " + address + ": " + str(e))
+            logging.debug("error for dns query to " + address + " (" + proto + "): " + str(e))
 
     return result
 
@@ -163,6 +169,9 @@ def make_test(ns_addr, qname):
             if len(unique_responses_copy) == 1:
                 # if all OK except some timeout and we ignore timeout then it is still OK!
                 statustext += "Test " + qname + ": OK (ignoring timeout)\n"
+            else:
+                statuscode = True
+                statustext += "Test " + qname + ": BAD\n"
         else:
             # if any result is bad, we change the overall status code
             statuscode = True
