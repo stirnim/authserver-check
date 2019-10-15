@@ -129,7 +129,7 @@ def make_auth_query(address, request, isudp=True):
             retry += 1
             result = err_timeout
             logging.debug("error for dns query to " + address + " (" + proto + "): " + str(e))
-        except BrokenPipeError as e:
+        except (BrokenPipeError, ConnectionResetError) as e:
             retry += 1
             result = err_timeout
             logging.debug("error for dns query to " + address + " (" + proto + "): " + str(e))
@@ -165,7 +165,8 @@ def make_test(ns_addr, qname):
     else:
         if ignoretimeout:
             unique_responses_copy = unique_responses.copy()
-            unique_responses_copy.remove(err_timeout)
+            if err_timeout in unique_responses_copy:
+                unique_responses_copy.remove(err_timeout)
             if len(unique_responses_copy) == 1:
                 # if all OK except some timeout and we ignore timeout then it is still OK!
                 statustext += "Test " + qname + ": OK (ignoring timeout)\n"
